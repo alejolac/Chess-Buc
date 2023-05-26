@@ -1,0 +1,31 @@
+html {
+  background-color: #242424;
+}
+
+.display-game {
+  min-height: 98vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+}
+
+.square {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  transition: 0.2s ease-in-out;
+}
+
+.square img {
+  max-width: 90%;
+}
+
+.square img:hover {
+  cursor: pointer;
+}
