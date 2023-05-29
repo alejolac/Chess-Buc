@@ -2,13 +2,10 @@ import { Root, Night, King, Queen, Bpawn, Wpawn, Bishop } from "./pieces.js"
 
 const Plays = (board, piece, index, type) => {
     // OBTENER PIEZA
-
     if (piece !== "p" && piece !== "P") {
         piece = piece.toLowerCase();
     }
-
     let moveFunction;
-
     switch (piece) {
         case "p":
             moveFunction = (index) => Bpawn(index, board, type);
@@ -36,7 +33,6 @@ const Plays = (board, piece, index, type) => {
             moveFunction = () => [];
             break;
     }
-
     return moveFunction(index);
 }
 

@@ -18,7 +18,8 @@ html {
   height: 120px;
   display: flex;
   justify-content: center;
-  align-items: center;  
+  align-items: center;
+  position: relative;
   transition: 0.2s ease-in-out;
 }
 
@@ -28,4 +29,59 @@ html {
 
 .square img:hover {
   cursor: pointer;
+}
+
+.square-play {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.square-play-length::before {
+  content: "";
+  display: block;
+  border: 8px solid #a8a8a8;
+  border-radius: 50%; 
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.5;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.square-play-length:hover::before {
+  opacity: 0.7;
+}
+
+.square-play::before {
+  content: "";
+  display: block;
+  border: 20px solid #afadad;
+  border-radius: 50%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  z-index: 1000;
+  opacity: 0.9;
+  -events: none;
+  transition: opacity 0.3s ease;
+}
+
+.square-play:hover::before {
+  opacity: 0.7;
+}
+
+.F {
+  background-color: #F7F769!important;
+}
+
+.B {
+  background-color: #BBCB2B!important;
 }

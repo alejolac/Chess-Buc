@@ -170,12 +170,12 @@ function Bpawn(index, board, type) {
             plays.push({ "row": index.row + 1, "col": index.col })
         }
         if (index.col - 1 >= 0) {
-            if (board[index.row + 1][index.col - 1].charCodeAt() > 90 != type) {
+            if (board[index.row + 1][index.col - 1].charCodeAt() > 90 != type && board[index.row + 1][index.col - 1].length > 0) {
                 plays.push({ "row": index.row + 1, "col": index.col - 1 })
             }
         }
         if (index.col + 1 < 8) {
-            if (board[index.row + 1][index.col + 1].charCodeAt() > 90 != type) {
+            if (board[index.row + 1][index.col + 1].charCodeAt() > 90 != type && board[index.row + 1][index.col + 1].length > 0) {
                 plays.push({ "row": index.row + 1, "col": index.col + 1 })
             }
         }
@@ -193,12 +193,12 @@ function Wpawn(index, board, type) {
             plays.push({ "row": index.row - 1, "col": index.col })
         }
         if (index.col - 1 >= 0) {
-            if (board[index.row - 1][index.col - 1].charCodeAt() > 90 != type) {
+            if (board[index.row - 1][index.col - 1].charCodeAt() > 90 != type && board[index.row - 1][index.col - 1].length > 0) {
                 plays.push({ "row": index.row - 1, "col": index.col - 1 })
             }
         }
         if (index.col + 1 < 8) {
-            if (board[index.row - 1][index.col + 1].charCodeAt() > 90 != type) {
+            if (board[index.row - 1][index.col + 1].charCodeAt() > 90 != type && board[index.row - 1][index.col + 1].length > 0) {
                 plays.push({ "row": index.row - 1, "col": index.col + 1 })
             }
         }
@@ -209,4 +209,4 @@ function Wpawn(index, board, type) {
     return plays
 }
 
-export {Night, Root, Queen, King, Bishop, Wpawn, Bpawn}
+export { Night, Root, Queen, King, Bishop, Wpawn, Bpawn }
