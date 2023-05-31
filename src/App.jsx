@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import Board from "./components/board.jsx"
 import Plays from "./logic/plays.jsx"
@@ -11,18 +11,48 @@ function App() {
       ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
       ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
       ['', '', '', '', '', '', '', ''],
-      ['', '', '', 'N', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', ''],
       ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
       ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
     ]
   )
+  const [warning, setWarning] = useState(false)
   const [preBoard, setPreBoard] = useState()
   const [prePiece, setPrePiece] = useState()
   const [preCoor, setPreCoor] = useState()
   const [possibilities, setPossibilities] = useState()
   const [afterPlay, setAfterPlay] = useState()
+  const [winner, setWinner] = useState("")
+
+  useEffect(() => {
+    if (Jaque(board, turn)) {
+      if (JaqueMate(board, turn)) {
+        setWinner("Ganador Blanco")
+      }
+    }
+  }, [turn])
+
+  function JaqueMate(board, turn) {
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col]
+        if (piece.length > 0 && piece.charCodeAt() > 90 == turn) {
+          const possibleMoves = Plays(board, piece, { "row": row, "col": col }, piece.charCodeAt() > 90)
+          for (const play of possibleMoves) {
+            const newBoard = JSON.parse(JSON.stringify(board));
+            newBoard[row][col] = ""
+            newBoard[play.row][play.col] = piece
+            if (!Jaque(newBoard, turn)) {
+              return false
+            }
+          }
+        }
+      }
+    }
+    return true
+  }
 
   const setStates = (board, prePiece, preCoor) => {
     setBoard(board)
@@ -30,20 +60,34 @@ function App() {
     setPreCoor(preCoor)
   }
 
-  const Jaque = (board, turn) => {
+  function whereIsKing(board, turn) {
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        if (board[row][col] == "K" || board[row][col] == "k") {
+          if (board[row][col].charCodeAt() > 90 == turn) {
+            return { "row": row, "col": col }
+          }
+        }
+      }
+    }
+  }
+
+  function Jaque(board, turn) {
+    let king = whereIsKing(board, turn)
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         const piece = board[row][col]
         if (piece.length > 0 && piece.charCodeAt() > 90 == !turn) {
-          const possibleMoves = Plays(board, piece, {"row": row, "col": col}, piece.charCodeAt() > 90)
+          const possibleMoves = Plays(board, piece, { "row": row, "col": col }, piece.charCodeAt() > 90)
           for (const play of possibleMoves) {
-            if (play)
+            if (play.row == king.row && king.col == play.col) {
+              return true
+            }
           }
         }
-        
-
       }
     }
+    return false
   }
 
   const updateBoard = (coor, content) => {
@@ -84,8 +128,22 @@ function App() {
       // Verificar movimiento
       for (const squares of possibilities) {
         if (squares.col == coor.col && squares.row == coor.row) {
+          const boardWarning = JSON.parse(JSON.stringify(newPreBoard))
+          const king = whereIsKing(newBoard, turn)
           newBoard[preCoor.row][preCoor.col] = ""
           newBoard[coor.row][coor.col] = prePiece
+          if (Jaque(newBoard, turn)) {
+            newPreBoard[preCoor.row][preCoor.col] += "::1"
+            newPreBoard[king.row][king.col] += "::1"
+            console.log(newPreBoard);
+            setBoard(newPreBoard)
+            setWarning(true)
+            setTimeout(() => {
+              setBoard(boardWarning)
+              setWarning(false)
+            }, 1000);
+            return
+          }
           setBoard(newBoard)
           setStateMove(0)
           setAfterPlay([preCoor, coor])
@@ -113,8 +171,16 @@ function App() {
   return (
     <>
       <div className='display-game'>
-        <Board afterPlay={afterPlay} stateMove={stateMove} state={board} handleClick={updateBoard} plays={possibilities} />
+        <Board warning={warning} afterPlay={afterPlay} stateMove={stateMove} state={board} handleClick={updateBoard} plays={possibilities} />
       </div>
+      <>
+        {
+          winner.length > 0 &&
+          <div>
+            Hola mundo 
+          </div> 
+        }
+      </>
     </>
   )
 }

@@ -1,14 +1,23 @@
 import pieces from "./pieces.jsx"
 import { useState, useEffect } from "react"
 
-const Square = ({ color, colorSec, children, coor, handleClick, stateMove, plays, afterPlay }) => {
+const Square = ({ color, colorSec, children, coor, handleClick, stateMove, plays, afterPlay, warning }) => {
     const [draggedPiece, setDraggedPiece] = useState(null);
     const [styleSquare, setStyleSquare] = useState({ backgroundColor: color });
     const [styleSquare1, setStyleSquare1] = useState({ backgroundColor: colorSec });
     const newPieces = pieces.pieces
 
     const handle = () => {
+        if (warning) return
         handleClick(coor, children)
+    }
+
+    const handleStyles = () => {
+        if (children.length == 4) return { backgroundColor: "#EC7E6A"}
+        if (children.length != 3) {
+            return styleSquare
+        }
+        return styleSquare1
     }
 
     const handleClass = () => {
@@ -36,9 +45,10 @@ const Square = ({ color, colorSec, children, coor, handleClick, stateMove, plays
 
     return (
         <div
-            style={children.length != 3 ? styleSquare : styleSquare1}
+            style={handleStyles()}
             className={handleClass()}
             onClick={() => handle()}>
+            
             <img
                 src={newPieces[children[0]]} alt="" />
         </div>
