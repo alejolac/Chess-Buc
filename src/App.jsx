@@ -177,7 +177,7 @@ function App() {
         {
           winner.length > 0 &&
           <div>
-            Hola mundo 
+            Ganador: 
           </div> 
         }
       </>
