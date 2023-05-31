@@ -165,6 +165,7 @@ function Night(index, board, type) {
 
 function Bpawn(index, board, type) {
     const plays = []
+    console.log(board);
     if (index.row + 1 >= 0) {
         if (board[index.row + 1][index.col].length == 0) {
             plays.push({ "row": index.row + 1, "col": index.col })
@@ -180,7 +181,7 @@ function Bpawn(index, board, type) {
             }
         }
     }
-    if (index.row == 1 && board[index.row + 2][index.col].length == 0) {
+    if (index.row == 1 && board[index.row + 2][index.col].length == 0 && board[index.row + 1][index.col].length == 0) {
         plays.push({ "row": index.row + 2, "col": index.col })
     }
     return plays
@@ -203,7 +204,7 @@ function Wpawn(index, board, type) {
             }
         }
     }
-    if (index.row == 6 && board[index.row - 2][index.col].length == 0) {
+    if (index.row == 6 && board[index.row - 2][index.col].length == 0 && board[index.row - 1][index.col].length == 0) {
         plays.push({ "row": index.row - 2, "col": index.col })
     }
     return plays

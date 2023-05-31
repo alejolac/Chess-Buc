@@ -30,6 +30,22 @@ function App() {
     setPreCoor(preCoor)
   }
 
+  const Jaque = (board, turn) => {
+    for (let row = 0; row < 8; row++) {
+      for (let col = 0; col < 8; col++) {
+        const piece = board[row][col]
+        if (piece.length > 0 && piece.charCodeAt() > 90 == !turn) {
+          const possibleMoves = Plays(board, piece, {"row": row, "col": col}, piece.charCodeAt() > 90)
+          for (const play of possibleMoves) {
+            if (play)
+          }
+        }
+        
+
+      }
+    }
+  }
+
   const updateBoard = (coor, content) => {
     const type = content.charCodeAt() > 90 // True == Black; False == White;
     let preType
@@ -56,9 +72,9 @@ function App() {
         setStateMove(0)
         return
       }
-      // Seleccionar pieza del mismo color
+      // Seleccionar pieza del mismo color y pasas de un color a otro
       if ((type == preType) && (content.length > 0) || (preType != turn)) {
-        const arrSquares = Plays(newBoard, content, coor, preType)
+        const arrSquares = Plays(newBoard, content, coor, type)
         newPreBoard[coor.row][coor.col] += ":1"
         setStates(newPreBoard, content, coor)
         if (turn == type) setPossibilities(arrSquares)
