@@ -2,19 +2,21 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Board from "./components/board.jsx"
 import Plays from "./logic/plays.jsx"
+import Modal from "./components/modal.jsx"
+import ModalPiece from "./components/modalPiece.jsx"
 
 function App() {
   const [turn, setTurn] = useState(false) // True == Black; False == White;
   const [stateMove, setStateMove] = useState(0)
   const [board, setBoard] = useState(
     [
-      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+      ['', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+      ['P', 'p', 'p', '', '', '', 'p', 'p'],
       ['', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
-      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+      ['Q', 'Q', 'Q', '', '', '', '', ''],
+      ['P', 'P', 'P', '', '', '', 'P', 'P'],
       ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
     ]
   )
@@ -25,14 +27,20 @@ function App() {
   const [possibilities, setPossibilities] = useState()
   const [afterPlay, setAfterPlay] = useState()
   const [winner, setWinner] = useState("")
+  const [fin, setFin] = useState(false)
 
   useEffect(() => {
     if (Jaque(board, turn)) {
       if (JaqueMate(board, turn)) {
-        setWinner("Ganador Blanco")
+        turn == false ? setWinner("Negras") : setWinner("Blancas")
+        setFin(true)
       }
     }
   }, [turn])
+
+  function resetWinner () {
+    setWinner("")
+  }
 
   function JaqueMate(board, turn) {
     for (let row = 0; row < 8; row++) {
@@ -63,8 +71,9 @@ function App() {
   function whereIsKing(board, turn) {
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
-        if (board[row][col] == "K" || board[row][col] == "k") {
-          if (board[row][col].charCodeAt() > 90 == turn) {
+        let piece = board[row][col]
+        if (piece[0] == "K" || piece[0] == "k") {
+          if (piece[0].charCodeAt() > 90 == turn) {
             return { "row": row, "col": col }
           }
         }
@@ -88,6 +97,14 @@ function App() {
       }
     }
     return false
+  }
+
+  function changePawn (board, type, coor) {
+    console.log(board);
+    console.log(type);
+    if (type && coor.row == 0) {
+      <ModalPiece type={type}/>
+    }
   }
 
   const updateBoard = (coor, content) => {
@@ -129,13 +146,14 @@ function App() {
       for (const squares of possibilities) {
         if (squares.col == coor.col && squares.row == coor.row) {
           const boardWarning = JSON.parse(JSON.stringify(newPreBoard))
-          const king = whereIsKing(newBoard, turn)
+          const boardKing = JSON.parse(JSON.stringify(newBoard))
+          const king = whereIsKing(boardKing, turn)
           newBoard[preCoor.row][preCoor.col] = ""
           newBoard[coor.row][coor.col] = prePiece
+          if ((coor.row == 7 || coor.row == 0) && (prePiece[0] == "p" || prePiece[0] == "P")) changePawn(newBoard, type, coor)
           if (Jaque(newBoard, turn)) {
             newPreBoard[preCoor.row][preCoor.col] += "::1"
             newPreBoard[king.row][king.col] += "::1"
-            console.log(newPreBoard);
             setBoard(newPreBoard)
             setWarning(true)
             setTimeout(() => {
@@ -171,14 +189,12 @@ function App() {
   return (
     <>
       <div className='display-game'>
-        <Board warning={warning} afterPlay={afterPlay} stateMove={stateMove} state={board} handleClick={updateBoard} plays={possibilities} />
+        <Board winner={fin} warning={warning} afterPlay={afterPlay} stateMove={stateMove} state={board} handleClick={updateBoard} plays={possibilities} />
       </div>
       <>
         {
           winner.length > 0 &&
-          <div>
-            Ganador: 
-          </div> 
+          <Modal onClose={resetWinner} winner={winner} />
         }
       </>
     </>

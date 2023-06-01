@@ -1,19 +1,19 @@
 import pieces from "./pieces.jsx"
 import { useState, useEffect } from "react"
 
-const Square = ({ color, colorSec, children, coor, handleClick, stateMove, plays, afterPlay, warning }) => {
+const Square = ({ color, colorSec, children, coor, handleClick, stateMove, plays, afterPlay, warning, winner }) => {
     const [draggedPiece, setDraggedPiece] = useState(null);
     const [styleSquare, setStyleSquare] = useState({ backgroundColor: color });
     const [styleSquare1, setStyleSquare1] = useState({ backgroundColor: colorSec });
     const newPieces = pieces.pieces
 
     const handle = () => {
-        if (warning) return
+        if (warning || winner) return
         handleClick(coor, children)
     }
 
     const handleStyles = () => {
-        if (children.length == 4) return { backgroundColor: "#EC7E6A"}
+        if (children.length == 4 || children.length == 7) return { backgroundColor: "#EC7E6A"}
         if (children.length != 3) {
             return styleSquare
         }
