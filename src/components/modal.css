@@ -45,3 +45,20 @@ button:hover {
     background-color: #333;
 }
 
+.head-pawn {
+    display: flex;
+}
+
+.modal-pawn {
+    padding: 40px;
+}
+
+.div-pawn div {
+    padding: 8px;
+    cursor: pointer;
+    transition: 0.4s ease-in-out;
+}
+
+.div-pawn div:hover {
+    background-color: #413f3f;
+}

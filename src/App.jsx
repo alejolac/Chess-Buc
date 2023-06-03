@@ -16,8 +16,8 @@ function App() {
       ['', '', '', '', '', '', '', ''],
       ['', '', '', '', '', '', '', ''],
       ['Q', 'Q', 'Q', '', '', '', '', ''],
-      ['P', 'P', 'P', '', '', '', 'P', 'P'],
-      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+      ['P', 'P', 'P', '', '', '', 'P', 'p'],
+      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', ''],
     ]
   )
   const [warning, setWarning] = useState(false)
@@ -28,6 +28,7 @@ function App() {
   const [afterPlay, setAfterPlay] = useState()
   const [winner, setWinner] = useState("")
   const [fin, setFin] = useState(false)
+  const [modalPawn, setModalPawn] = useState(false)
 
   useEffect(() => {
     if (Jaque(board, turn)) {
@@ -38,7 +39,7 @@ function App() {
     }
   }, [turn])
 
-  function resetWinner () {
+  function resetWinner() {
     setWinner("")
   }
 
@@ -99,14 +100,14 @@ function App() {
     return false
   }
 
-  function changePawn (board, type, coor) {
-    console.log(board);
-    console.log(type);
-    if (type && coor.row == 0) {
-      <ModalPiece type={type}/>
-    }
+  function changePawn(e) {
+    setModalPawn(false)
+    let newBoard = JSON.parse(JSON.stringify(board));
+    if (e.charCodeAt() > 90) {
+      newBoard[preCoor.row + 1][preCoor.col] = e
+    } else { newBoard[preCoor.row - 1][preCoor.col] = e }
+    setBoard(newBoard)
   }
-
   const updateBoard = (coor, content) => {
     const type = content.charCodeAt() > 90 // True == Black; False == White;
     let preType
@@ -150,7 +151,6 @@ function App() {
           const king = whereIsKing(boardKing, turn)
           newBoard[preCoor.row][preCoor.col] = ""
           newBoard[coor.row][coor.col] = prePiece
-          if ((coor.row == 7 || coor.row == 0) && (prePiece[0] == "p" || prePiece[0] == "P")) changePawn(newBoard, type, coor)
           if (Jaque(newBoard, turn)) {
             newPreBoard[preCoor.row][preCoor.col] += "::1"
             newPreBoard[king.row][king.col] += "::1"
@@ -166,12 +166,12 @@ function App() {
           setStateMove(0)
           setAfterPlay([preCoor, coor])
           setTurn(!turn)
+          if ((prePiece[0] == "P" && coor.row == 0) || (prePiece[0] == "p" && coor.row == 7)) setModalPawn(true)
           return
         }
       }
       // Verificar casilla vacia
       if (board[coor.row][coor.col].length == 0) {
-        console.log(coor);
         setStates(newPreBoard, content, coor)
         setStateMove(0)
         return
@@ -195,6 +195,12 @@ function App() {
         {
           winner.length > 0 &&
           <Modal onClose={resetWinner} winner={winner} />
+        }
+      </>
+      <>
+        {
+          modalPawn &&
+          <ModalPiece board={board} turn={turn} closeModal={changePawn} />
         }
       </>
     </>

@@ -165,7 +165,7 @@ function Night(index, board, type) {
 
 function Bpawn(index, board, type) {
     const plays = []
-    if (index.row + 1 >= 0) {
+    if (index.row + 1 < 8) {
         if (board[index.row + 1][index.col].length == 0) {
             plays.push({ "row": index.row + 1, "col": index.col })
         }
